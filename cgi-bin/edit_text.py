@@ -19,7 +19,7 @@ def addWords(dic, c):
 
 def makeVoc(filename):
 	tokens = []
-	file_in = open("/tmp/" + filename, "rt")
+	file_in = open("data/" + filename, "rt")
 	for inputStr in file_in:
 		inputStr = inputStr.lower()
 		tokens.extend(nltk.word_tokenize(inputStr))
@@ -45,7 +45,7 @@ def makeVoc(filename):
 	return 1
 
 def addDB(dic):
-	conn = sqlite3.connect("/tmp/voc.db")
+	conn = sqlite3.connect("data/voc.db")
 	c = conn.cursor()
 	c.execute('''CREATE TABLE IF NOT EXISTS voc (word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER)''')
 	c.execute('''CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, description TEXT, translate TEXT, color TEXT)''')

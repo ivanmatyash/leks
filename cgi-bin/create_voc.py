@@ -20,7 +20,7 @@ print("<h1>Your Dictionary:</h1>")
 
 if file_name.filename:
 	fn = os.path.basename(file_name.filename)
-	open('/tmp/' + fn, 'wb').write(file_name.file.read())
+	open("data/" + fn, 'wb').write(file_name.file.read())
 	res = edit_text.makeVoc(fn)
 
 print('<a href = "voc.py">Dictionary</a>')
