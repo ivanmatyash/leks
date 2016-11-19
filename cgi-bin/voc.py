@@ -20,9 +20,12 @@ conn = sqlite3.connect('/tmp/voc.db')
 c = conn.cursor()
 
 print('<table>')
-for word, amount, tag in c.execute('SELECT * FROM voc ORDER BY word'):
+print("<tr><td><b>Word</b></td> <td><b>Tag</b></td> <td><b>Description</b></td> <td><b>Rus. description</b></td> <td><b>Amount</b></td> <td><b>Delete</b></td></tr>")
+for word, amount, tag, en_d, ru_d, color in c.execute('SELECT v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY word'):
 	remove_str = '<a href = "delete.py/?DEL=1&ff=2">del</a>'
-	print('<tr><td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> </tr>'.format(word, tag, amount, remove_str))
+	print('<tr style="background:#{0}">'.format(color))
+	print('<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5}</td>'.format(word, tag, en_d, ru_d, amount, remove_str))
+	print('</tr>')
 print('</table>')
 conn.close()
 print("""</body>

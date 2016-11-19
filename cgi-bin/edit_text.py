@@ -3,6 +3,19 @@ import nltk
 import sqlite3
 
 tags = []
+def addTags(c):
+	inp = open("tags_table.sql", "rt")
+	for strin in inp:
+		c.execute(strin)
+	print("Теги успешно добавлены")
+	inp.close()
+def addWords(dic, c):
+	c.execute('''SELECT name, id FROM tags''')
+	sl = dict(c.fetchall())
+	for item in dic:
+		c.execute('INSERT INTO voc (word, amount, tagID) VALUES ("{0}","{1}", "{2}")'.format(item[0], dic[item], sl[item[1]]))
+		
+	
 
 def makeVoc(filename):
 	tokens = []
@@ -33,9 +46,17 @@ def makeVoc(filename):
 def addDB(dic):
 	conn = sqlite3.connect("/tmp/voc.db")
 	c = conn.cursor()
-	c.execute('''CREATE TABLE IF NOT EXISTS voc (word text, amount integer DEFAULT 1, tag text)''')
+	c.execute('''CREATE TABLE IF NOT EXISTS voc (word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER)''')
+	c.execute('''CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, description TEXT, translate TEXT, color TEXT)''')
 	conn.commit()
-	for item in dic:
-		c.execute('INSERT INTO voc (word, amount, tag) VALUES ("{0}","{1}", "{2}")'.format(item[0], dic[item], item[1]))
+	c.execute('''SELECT COUNT(*) FROM tags''')
+	t = c.fetchall()[0]
+	if t[0] == 0:
+		addTags(c)
 		conn.commit()
+	else:
+		print("Теги уже есть в базе данных<br>")
+	
+	addWords(dic, c)
+	conn.commit()
 	conn.close()
