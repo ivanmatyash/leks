@@ -23,18 +23,6 @@ if file_name.filename:
 	open('/tmp/' + fn, 'wb').write(file_name.file.read())
 	res = edit_text.makeVoc(fn)
 
-	if res == 1:
-		message = "Success"
-	else:
-		message = "error"
-else:
-	message = "WRONG"
-
-conn = sqlite3.connect('/tmp/voc.db')
-c = conn.cursor()
-
 print('<a href = "voc.py">Dictionary</a>')
-conn.close()
-print("<p>status: {}</p>".format(message))
 print("""</body>
 	</html>""")

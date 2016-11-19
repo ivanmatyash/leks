@@ -21,15 +21,16 @@ def makeVoc(filename):
 	tokens = []
 	file_in = open("/tmp/" + filename, "rt")
 	for inputStr in file_in:
+		inputStr = inputStr.lower()
 		tokens.extend(nltk.word_tokenize(inputStr))
 	list_rm = []
 	for i in tokens:
-		if i[0].isupper():		
-			for b in tokens:
-				if b[0].islower() and i.lower() == b:
-					for k in tokens:
-						if k == i:
-							tokens[tokens.index(k)] = i.lower()
+#		if i[0].isupper():		
+#			for b in tokens:
+#				if b[0].islower() and i.lower() == b:
+#					for k in tokens:
+#						if k == i:
+#							tokens[tokens.index(k)] = i.lower()
 		if not i.isalpha():
 			list_rm.append(i)				
 

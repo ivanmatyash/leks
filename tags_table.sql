@@ -1,7 +1,7 @@
 
 INSERT INTO tags VALUES(1, 'CC', 'coordinating conjunction', 'союз', 'FFFAFA');
 INSERT INTO tags VALUES(2, 'CD', 'cardinal number', 'коичественное числительное', 'DCDCDC');
-INSERT INTO tags VALUES(3, 'DT', 'determiner', 'определитель', 'FAF0E6');
+INSERT INTO tags VALUES(3, 'DT', 'determiner', 'артикль', 'FAF0E6');
 INSERT INTO tags VALUES(4, 'EX', 'existential there', 'служебное there', 'FFDEAD');
 INSERT INTO tags VALUES(5, 'FW', 'foreign word', 'иностранное слово', 'F0FFF0');
 INSERT INTO tags VALUES(6, 'IN', 'preposition/subordinating conjunction', 'предлог (подчиненная связь);', 'E6E6FA');
@@ -34,3 +34,4 @@ INSERT INTO tags VALUES(32, 'WDT', 'wh-determiner', 'wh-союз', 'CD00CD');
 INSERT INTO tags VALUES(33, 'WP', 'wh-pronoun', 'wh-местоимение', '90EE90');
 INSERT INTO tags VALUES(34, 'WP$', 'possessive wh-pronoun', 'притяжательно wh-местоимение', 'FFFF00');
 INSERT INTO tags VALUES(35, 'WRB', 'wh-abverb', 'wh-наречие', '8B8B00');
+INSERT INTO tags VALUES(36, '$', 'other tag', 'неизвестный', 'FFFF33');
