@@ -23,23 +23,36 @@ form_data = cgi.FieldStorage()
 word = form_data.getfirst("word", "-1")
 tag = form_data.getfirst("tag", "-1")
 
-message ='Слово "{0}" с тегом "{1}" успешно удалено из словаря. Сейчас вы будете перенаправлены.'.format(word, tag)
+message ='Слово "{0}" с тегом "{1}" успешно удалено из словаря. Это окно закроется автоматически.'.format(word, tag)
 
 if word != '-1' and tag != '-1':
 	removeInfo(word, tag)
 else:
-	message = "Произошла ошибка передачи данных от клиента к серверу, сейчас вы будете перенаправлены."
+	message = "Произошла ошибка передачи данных от клиента к серверу, это окно закроется автоматически."
 
 print ("Content-type: text/html\n")
 print("""<!DOCTYPE HTML>
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<meta HTTP-EQUIV="REFRESH" CONTENT="3; URL=/cgi-bin/voc.py">
 		<title>Удаление слова из словаря</title>
+<script>
+        function closeW() 
+        {  
+	
+            var t=setTimeout("closeOpenedWindow();", 3000); // закрыть через 2 сек
+        }  
+        function closeOpenedWindow()
+        {  
+            window.close()  
+        } 
+    </script>
+
 	</head>
 	<body>""")
 print(message)
-print('<br><a href = "/cgi-bin/voc.py">Назад к словарю</a>')
+print('''<script type="text/javascript">
+closeW()
+</script>''')
 print("""</body>
 	</html>""")

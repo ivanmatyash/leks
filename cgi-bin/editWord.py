@@ -27,38 +27,26 @@ def addInfo(word, tag):
 	conn.close()
 
 form_data = cgi.FieldStorage()
-newWord = form_data.getfirst("word", "-1")
+word = form_data.getfirst("word", "-1")
 tag = form_data.getfirst("tag", "-1")
 
-message ='Слово "{0}" с тегом "{1}" успешно добавлено в словарь. Это окно закроется автоматически.'.format(newWord, tag)
 
-if newWord != '-1' and tag != '-1':
-	addInfo(newWord, tag)
+message ='Вы находитесь на странице редактирования слова "{0}" с тегом "{1}".'.format(word, tag)
+
+if word != '-1' and tag != '-1':
+	pass
 else:
-	message = "Произошла ошибка передачи данных от клиента к серверу, это окно закроется автоматически"
+	message = "Произошла ошибка передачи данных от клиента к серверу."
 
 print ("Content-type: text/html\n")
 print("""<!DOCTYPE HTML>
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<title>Добавление нового слова в словарь</title>
-<script>
-        function closeW() 
-        {  
-	
-            var t=setTimeout("closeOpenedWindow();", 3000); // закрыть через 2 сек
-        }  
-        function closeOpenedWindow()
-        {  
-            window.close()  
-        } 
-    </script>
+		<title>Изменение слова в словаре</title>
 	</head>
 	<body>""")
 print(message)
-print('''<script type="text/javascript">
-closeW()
-</script>''')
+print('<br><a href = "/cgi-bin/voc.py">Назад к словарю</a>')
 print("""</body>
 	</html>""")
