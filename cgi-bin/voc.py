@@ -12,6 +12,9 @@ form_data = cgi.FieldStorage()
 sorting = form_data.getfirst("sortedBy", "-1")
 
 
+
+
+
 def sortedByCount():
 	return 'SELECT v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount'
 def sortedByCountReverse():
@@ -25,13 +28,19 @@ def sortedByTag():
 def sortedByTagReverse():
 	return 'SELECT v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID DESC'
 
-print ("Content-type: text/html\n")
-print('''<!DOCTYPE HTML>
-	<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Словарь</title>
-	<script type="text/javascript"> 
+c.execute("SELECT SUM(amount) FROM  voc")
+amountOfWords = c.fetchall()[0][0]
+c.execute("SELECT COUNT(*) FROM voc")
+amountOfUniqueWords = c.fetchall()[0][0]
+
+
+print('''
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Главная | Словарь</title>
+<link rel="stylesheet" type="text/css" href="/style.css"/>
+<script type="text/javascript"> 
 function destroy(a, b, c)
 {
 if (confirm('Bы уверены, что хотите удалить слово "' + a + '" c тегом "' + b + '" из словаря?')) {
@@ -55,24 +64,25 @@ var link1 = "/cgi-bin/addWord.py?word=" + word + "&tag=" + val
 window.open(link1, '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
 }
 </script>
-	</head>
-	<body>''')
-c.execute("SELECT SUM(amount) FROM  voc")
-amountOfWords = c.fetchall()[0][0]
-c.execute("SELECT COUNT(*) FROM voc")
-amountOfUniqueWords = c.fetchall()[0][0]
+</head>
+<body>
+<div id="container">
+  <div id="header"> <a href="/">My dictionary</a> </div>
+  <div id="menu"> ''')
 
-print('<a href="/cgi-bin/voc.py">Главная</a> | <a href="/">Создать новый словарь</a> | <a href="/cgi-bin/stat.py">Статистика</a> | <a onclick="truncate();" href="javascript:void(0)" >Очистить словарь</a> | Слов в словаре: {0} | Уникальных слов: {1}'.format(amountOfWords, amountOfUniqueWords))
-print("<h1>My Dictionary</h1>")
+print('<a href="/">Главная</a>&nbsp; &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/voc.py">Словарь</a> &nbsp; &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/stat.py">Статистика</a> &nbsp; &nbsp; &nbsp; &nbsp; <a onclick="truncate();" href="javascript:void(0)" >Очистить словарь</a> &nbsp; &nbsp; &nbsp; &nbsp;<a> Слов в словаре: {0}</a> &nbsp; &nbsp; &nbsp; &nbsp; <a>Уникальных слов: {1}</a>'.format(amountOfWords, amountOfUniqueWords))
+print(''' </div>
+  <div id="mainV">''')
 
-print('Добавить новый текст в словарь: ')
+
+print('<div id="add_block">Добавить новый текст в словарь: ')
 print('''<form enctype="multipart/form-data"  method="post" action="addText.py">
         <input type="file" accept = "text/plain" name="new_file">
         <input type="submit" value="Send">
-    </form><br>''')
+    </form></div>''')
 
-print('''<form method="post">
-  <p>Добавить новое слово в словарь:<br>
+print('''<div id="addw_block"><form method="post">
+  Добавить новое слово в словарь:<br>
    <input name="new_word" type="text" size="20">
   <select id="list_t">
 	<option value="CC">CC</option> <option value="CD">CD</option> <option>DT</option> <option>EX</option>
@@ -82,8 +92,8 @@ print('''<form method="post">
 <option>POS</option> <option>PRP</option> <option>PRP$</option> <option>RB</option>
 <option>RBR</option> <option>RBS</option> <option>RP</option> <option>TO</option> <option>UH</option> <option>VB</option> <option>VBD</option> <option>VBG</option> <option>VBN</option> <option>VBP</option> <option>VBZ</option> <option>WDT</option> <option>WP</option> <option>WP$</option> <option>WRB</option>
 	</select>
-<input onclick="addWordF(new_word.value)" type="submit" value="Send">
-  </p>''')
+<input onclick="addWordF(new_word.value)" type="submit" value="Send"></form>
+  </div><br><br>''')
 
 
 str1 = '<a href = "voc.py?sortedBy=words">▲</a>'
@@ -107,7 +117,7 @@ else:
 	zapros = sortedByWords()
 
 
-print('<table>')
+print('<table width = 100%>')
 print("<tr><td><b>#</b></td> <td><b>Word {0}{1}</b></td> <td><b>Tag{2}{3}</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount{4}{5}</b></td> <td><b>Edit</b></td> <td><b>Delete</b></td></tr>".format(str1, str2, str5, str6, str3, str4))
 ind = 1
 for word, amount, tag, en_d, ru_d, color in c.execute(zapros):
@@ -121,6 +131,8 @@ for word, amount, tag, en_d, ru_d, color in c.execute(zapros):
 	ind += 1
 print('</table>')
 conn.close()
-print("<br><center>&copy; Ivan Matsiash</center>")
-print("""</body>
-	</html>""")
+print("""</div>
+  <div id="footer"> &copy; 2016 Все права защищены &nbsp;<span class="separator">|</span>&nbsp; <a href="http://vk.com/ivan_matyash" target="blank">Ivan Matsiash</a> </div>
+</div>
+</body>
+</html>""")

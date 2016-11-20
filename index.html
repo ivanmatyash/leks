@@ -1,13 +1,33 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="utf-8">
-<title>Создание словаря</title>
+<title>Главная | Словарь</title>
+<link rel="stylesheet" type="text/css" href="/style.css"/>
 </head>
 <body>
-    <form enctype="multipart/form-data"  method="post" action="/cgi-bin/create_voc.py">
+<div id="container">
+  <div id="header"> <a href="/">My dictionary</a> </div>
+  <div id="menu"> <a href="/">Главная</a> &nbsp; &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/voc.py">Словарь</a> &nbsp; &nbsp; &nbsp; &nbsp; <a href="/">Статистика</a> &nbsp; &nbsp; &nbsp; &nbsp; <a href="/">Об авторе</a>  </div>
+  <div id="sidebar">
+ <img src = "/img/logo.jpg">
+  </div>
+  <div id="main">
+
+Вы находитесь на главной странице проекта, позволяющего обрабатывать тексты естественного языка. Автором является студент 3 курса факультета прикладной математики и информатики Матяш Иван Сергеевич.
+
+
+<h2>Основные возможности</h2>
+Словарь поддерживает следующие основные операции: создание нового словаря, добавление слов из текста, добавление отдельных слов, теггинг слов, сортировка слов, удаление слов, редактирование слов, очистка словаря, получение статистики словаря.
+
+<h2>Создать новый словарь</h2>
+
+<form enctype="multipart/form-data"  method="post" action="/cgi-bin/create_voc.py">
         <input type="file" accept = "text/plain" name="filename">
         <input type="submit" value="Send">
-    </form>
+    </form> 
+
+</div>
+  <div id="footer"> &copy; 2016 Все права защищены &nbsp;<span class="separator">|</span>&nbsp; <a href="http://vk.com/ivan_matyash" target="blank">Ivan Matsiash</a> </div>
+</div>
 </body>
 </html>
