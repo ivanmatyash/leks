@@ -39,7 +39,7 @@ def addInfo(filename):
 		if t[0] == 0:
 			c.execute("INSERT INTO voc (word, amount, tagID) SELECT '{0}', {1}, '{2}' WHERE NOT EXISTS (SELECT * FROM voc WHERE word = '{0}' AND tagID = {2});".format(item[0], dic[item], sl[item[1]]))
 		else:
-			c.execute("UPDATE voc SET amount = amount + 1 WHERE word = '{0}' AND tagID = {1}".format(item[0], sl[item[1]]))
+			c.execute("UPDATE voc SET amount = amount + {2} WHERE word = '{0}' AND tagID = {1}".format(item[0], sl[item[1]], dic[item]))
 
 	conn.commit()
 	conn.close()

@@ -31,7 +31,14 @@ word = form_data.getfirst("word", "-1")
 tag = form_data.getfirst("tag", "-1")
 amount = form_data.getfirst("amount", "-1")
 
-message ='Вы находитесь на странице редактирования слова "{0}" с тегом "{1}".'.format(word, tag)
+message ='<h2>Редактирование слова</h2>\
+	<h3>Старое значение: </h3>\
+	<table>\
+	<tr> <td><b>Слово: </b></td> <td>{0}</td> </tr>\
+	<tr> <td><b>Тег: </b></td> <td>{1}</td> </tr>\
+	<tr> <td><b>Количество: </b></td> <td>{2}</td> </tr>\
+	</table>\
+	<h3>Новое значение: </h3>'.format(word, tag, amount)
 form_str = ''
 
 if word != '-1' and tag != '-1' and amount != '-1':
