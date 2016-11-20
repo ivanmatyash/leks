@@ -38,10 +38,8 @@ function destroy(a, b)
 if (confirm('Bы уверены, что хотите удалить слово "' + a + '" c тегом "' + b + '" из словаря?')) {
 var link1 = "deleteWord.py/?word=" + a + "&tag=" + b;
 window.open(link1, '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
-
 }
 }
-
 function truncate()
 {
 if (confirm('Bы уверены, что хотите очистить весь словарь?')) 
@@ -50,7 +48,6 @@ if (confirm('Вы хорошо подумали? Словарь будет по�
 window.open('/cgi-bin/truncate.py', '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
 }
 }
-
 function addWordF(word)
 {
 var sel = document.getElementById("list_t"); // Получаем наш список
@@ -59,7 +56,6 @@ var link1 = "/cgi-bin/addWord.py?word=" + word + "&tag=" + val
 window.open(link1, '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
 }
 </script>
-
 	</head>
 	<body>''')
 c.execute("SELECT SUM(amount) FROM  voc")
