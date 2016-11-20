@@ -73,7 +73,7 @@ print("""<!DOCTYPE HTML>
         function closeW() 
         {  
 	
-            var t=setTimeout("closeOpenedWindow();", 3000); // закрыть через 2 сек
+            var t=setTimeout("closeOpenedWindow();", 5000); // закрыть через 2 сек
         }  
         function closeOpenedWindow()
         {  

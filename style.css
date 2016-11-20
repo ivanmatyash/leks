@@ -95,8 +95,15 @@ padding: 10px;
 display:inline-block;
 }
 #addw_block{
-padding: 0 0 0 125px;
+padding: 0 0 0 128px;
 display:inline-block;
+}
+#search_block{
+margin: 20 20 0 20px;
+text-align:center;
+}
+#search_results{
+text-align:center;
 }
 #footer {
 padding: 6px 40px 6px 40px;
@@ -119,4 +126,8 @@ color: #666666;
 .separator {
 font-size:11px;
 color:#FFFFFF;
+}
+
+#verh{
+text-align: center;
 }

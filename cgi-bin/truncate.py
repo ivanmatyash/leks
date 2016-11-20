@@ -14,7 +14,7 @@ amountW = c.fetchall()[0][0]
 c.execute('''SELECT SUM(amount) FROM voc''')
 amountS = c.fetchall()[0][0]
 c.execute('''DROP TABLE voc''')
-c.execute('''CREATE TABLE voc (word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER)''')
+c.execute('''CREATE TABLE voc (idWord INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER)''')
 conn.commit()
 t2 = time.time()
 
@@ -39,7 +39,7 @@ print("""<!DOCTYPE HTML>
         }  
         function closeOpenedWindow()
         {  
-		window.opener.location.reload();
+		window.opener.document.location="/cgi-bin/voc.py";
         	window.close()  
         } 
     </script>

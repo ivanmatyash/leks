@@ -47,7 +47,7 @@ print("""<!DOCTYPE HTML>
         }  
         function closeOpenedWindow()
         {  
-		window.opener.location.reload();
+		window.opener.document.location="/cgi-bin/voc.py";
         	window.close();
         } 
     </script>
