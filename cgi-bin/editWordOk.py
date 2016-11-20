@@ -2,9 +2,7 @@
 import cgi, os
 import html
 import cgitb; cgitb.enable()
-import edit_text
 import sqlite3
-import nltk
 
 form_data = cgi.FieldStorage()
 word = form_data.getfirst("word", "-1")
@@ -69,8 +67,9 @@ print("""<!DOCTYPE HTML>
             var t=setTimeout("closeOpenedWindow();", 3000); // закрыть через 2 сек
         }  
         function closeOpenedWindow()
-        {  
-            window.close()  
+        { 
+		window.opener.location.reload();
+        	window.close();  
         } 
     </script>
 	</head>

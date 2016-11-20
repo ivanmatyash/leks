@@ -2,7 +2,6 @@
 import cgi, os
 import html
 import cgitb; cgitb.enable()
-import edit_text
 import sqlite3
 
 
@@ -33,10 +32,10 @@ print('''<!DOCTYPE HTML>
 		<meta charset="utf-8">
 		<title>Словарь</title>
 	<script type="text/javascript"> 
-function destroy(a, b)
+function destroy(a, b, c)
 {
 if (confirm('Bы уверены, что хотите удалить слово "' + a + '" c тегом "' + b + '" из словаря?')) {
-var link1 = "deleteWord.py/?word=" + a + "&tag=" + b;
+var link1 = "deleteWord.py/?word=" + a + "&tag=" + b + "&amount=" + c;
 window.open(link1, '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
 }
 }
@@ -63,8 +62,8 @@ amountOfWords = c.fetchall()[0][0]
 c.execute("SELECT COUNT(*) FROM voc")
 amountOfUniqueWords = c.fetchall()[0][0]
 
-print('<a href="/cgi-bin/voc.py">Главная</a> | <a href="/cgi-bin/stat.py">Статистика</a> | <a onclick="truncate();" href="/cgi-bin/voc.py" >Очистить словарь</a> |Слов в словаре: {0} | Уникальных слов: {1}'.format(amountOfWords, amountOfUniqueWords))
-print("<h1>Your Dictionary:</h1>")
+print('<a href="/cgi-bin/voc.py">Главная</a> | <a href="/">Создать новый словарь</a> | <a href="/cgi-bin/stat.py">Статистика</a> | <a onclick="truncate();" href="javascript:void(0)" >Очистить словарь</a> | Слов в словаре: {0} | Уникальных слов: {1}'.format(amountOfWords, amountOfUniqueWords))
+print("<h1>My Dictionary</h1>")
 
 print('Добавить новый текст в словарь: ')
 print('''<form enctype="multipart/form-data"  method="post" action="addText.py">
@@ -107,6 +106,7 @@ elif sorting == 'countReverse':
 else:
 	zapros = sortedByWords()
 
+
 print('<table>')
 print("<tr><td><b>#</b></td> <td><b>Word {0}{1}</b></td> <td><b>Tag{2}{3}</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount{4}{5}</b></td> <td><b>Edit</b></td> <td><b>Delete</b></td></tr>".format(str1, str2, str5, str6, str3, str4))
 ind = 1
@@ -114,13 +114,13 @@ for word, amount, tag, en_d, ru_d, color in c.execute(zapros):
 
 	edit_str = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'editWord.py/?word={0}&tag={1}&amount={2}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(word, tag, amount) + '">[edit]</a>'
 
-	remove_str = '<a onclick="destroy(\'{0}\', \'{1}\');" href = "/cgi-bin/voc.py"><center>[x]</center></a>'.format(word, tag)
+	remove_str = '<a onclick="destroy(\'{0}\', \'{1}\', {2});" href = "javascript:void(0)"><center>[x]</center></a>'.format(word, tag, amount)
 	print('<tr style="background:#{0}">'.format(color))
 	print('<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5}</td> <td>{6}</td> <td>{7}</td>'.format(ind, word, tag, en_d, ru_d, amount, edit_str, remove_str))
 	print('</tr>')
 	ind += 1
 print('</table>')
-
 conn.close()
+print("<br><center>&copy; Ivan Matsiash</center>")
 print("""</body>
 	</html>""")

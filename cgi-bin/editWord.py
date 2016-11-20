@@ -2,9 +2,7 @@
 import cgi, os
 import html
 import cgitb; cgitb.enable()
-import edit_text
 import sqlite3
-import nltk
 
 
 

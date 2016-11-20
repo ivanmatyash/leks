@@ -2,10 +2,7 @@
 import cgi, os
 import html
 import cgitb; cgitb.enable()
-import edit_text
 import sqlite3
-import nltk
-
 
 
 def addInfo(word, tag):
@@ -30,7 +27,13 @@ form_data = cgi.FieldStorage()
 newWord = form_data.getfirst("word", "-1")
 tag = form_data.getfirst("tag", "-1")
 
-message ='Слово "{0}" с тегом "{1}" успешно добавлено в словарь. Это окно закроется автоматически.'.format(newWord, tag)
+message ='<h2>Добавление нового слова прошло успешно</h2>\
+	<h3>Информация о добавленном слове: </h3>\
+	<table>\
+	<tr> <td><b>Слово: </b></td> <td>{0}</td> </tr>\
+	<tr> <td><b>Тег: </b></td> <td>{1}</td> </tr>\
+	<tr> <td><b>Количество: </b></td> <td>{2}</td> </tr>\
+	</table><br>Это окно закроется через 5 секунд автоматически.<br>'.format(newWord, tag, 1)
 
 if newWord != '-1' and tag != '-1':
 	addInfo(newWord, tag)
@@ -47,11 +50,11 @@ print("""<!DOCTYPE HTML>
         function closeW() 
         {  
 	
-            var t=setTimeout("closeOpenedWindow();", 3000); // закрыть через 2 сек
+            var t=setTimeout("closeOpenedWindow();", 5000); // закрыть через 2 сек
         }  
         function closeOpenedWindow()
         {  
-            window.close()  
+        	window.close();
         } 
     </script>
 	</head>
@@ -60,5 +63,6 @@ print(message)
 print('''<script type="text/javascript">
 closeW()
 </script>''')
+print('''<br><center><a href="#" onclick="closeOpenedWindow();">[Закрыть отчет]</a></center>''')
 print("""</body>
 	</html>""")

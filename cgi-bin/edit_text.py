@@ -42,11 +42,12 @@ def makeVoc(filename):
 	for item in tags:
 		dic[item] += 1
 	addDB(dic)
-	return 1
+	return len(tags)
 
 def addDB(dic):
 	conn = sqlite3.connect("data/voc.db")
 	c = conn.cursor()
+	c.execute('''DROP TABLE IF EXISTS voc''')
 	c.execute('''CREATE TABLE IF NOT EXISTS voc (word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER)''')
 	c.execute('''CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, description TEXT, translate TEXT, color TEXT)''')
 	conn.commit()
@@ -55,8 +56,7 @@ def addDB(dic):
 	if t[0] == 0:
 		addTags(c)
 		conn.commit()
-	else:
-		print("Теги уже есть в базе данных<br>")
+	
 	
 	addWords(dic, c)
 	conn.commit()

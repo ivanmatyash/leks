@@ -2,10 +2,7 @@
 import cgi, os
 import html
 import cgitb; cgitb.enable()
-import edit_text
 import sqlite3
-import nltk
-
 
 
 def removeInfo(word, tag):
@@ -22,10 +19,16 @@ def removeInfo(word, tag):
 form_data = cgi.FieldStorage()
 word = form_data.getfirst("word", "-1")
 tag = form_data.getfirst("tag", "-1")
+amount = form_data.getfirst("amount", "-1")
 
-message ='Слово "{0}" с тегом "{1}" успешно удалено из словаря. Это окно закроется автоматически.'.format(word, tag)
+message ='<h2>Удаление слова прошло успешно.</h2><b><h3>Информация об удаленном слове:</h3></b> \
+	<table>\
+	<tr><td><b>Слово: </b></td> <td>{0}</td></tr>\
+	<tr><td><b>Тег: </b></td> <td>{1}</td></tr>\
+	<tr><td><b>Количество: </b></td> <td> {2}</td></tr>\
+	</table>Это окно закроется через 5 секунд автоматически.<br>'.format(word, tag, amount)
 
-if word != '-1' and tag != '-1':
+if word != '-1' and tag != '-1' and amount != '-1':
 	removeInfo(word, tag)
 else:
 	message = "Произошла ошибка передачи данных от клиента к серверу, это окно закроется автоматически."
@@ -40,11 +43,12 @@ print("""<!DOCTYPE HTML>
         function closeW() 
         {  
 	
-            var t=setTimeout("closeOpenedWindow();", 3000); // закрыть через 2 сек
+            var t=setTimeout("closeOpenedWindow();", 5000); // закрыть через 5 сек
         }  
         function closeOpenedWindow()
         {  
-            window.close()  
+		window.opener.location.reload();
+        	window.close();
         } 
     </script>
 
@@ -54,5 +58,6 @@ print(message)
 print('''<script type="text/javascript">
 closeW()
 </script>''')
+print('''<br><center><a href="#" onclick="closeOpenedWindow();">[Закрыть отчет]</a></center>''')
 print("""</body>
 	</html>""")
