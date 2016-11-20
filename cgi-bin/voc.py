@@ -86,13 +86,13 @@ print('''<form method="post">
 <input onclick="addWordF(new_word.value)" type="submit" value="Send">
   </p>''')
 
-print("Sorted by:")
-print('<a href = "voc.py?sortedBy=words">words↓</a>')
-print('<a href = "voc.py?sortedBy=wordsReverse">words↑</a>')
-print('<a href = "voc.py?sortedBy=count">count↓</a>')
-print('<a href = "voc.py?sortedBy=countReverse">count↑</a>')
-print('<a href = "voc.py?sortedBy=tag">tag↓</a>')
-print('<a href = "voc.py?sortedBy=tagReverse">tag↑</a>')
+
+str1 = '<a href = "voc.py?sortedBy=words">▲</a>'
+str2 = '<a href = "voc.py?sortedBy=wordsReverse">▼</a>'
+str3 = '<a href = "voc.py?sortedBy=count">▲</a>'
+str4 = '<a href = "voc.py?sortedBy=countReverse">▼</a>'
+str5 = '<a href = "voc.py?sortedBy=tag">▲</a>'
+str6 = '<a href = "voc.py?sortedBy=tagReverse">▼</a>'
 zapros = ''
 if sorting == 'wordsReverse':
 	zapros = sortedByWordsReverse()
@@ -108,13 +108,11 @@ else:
 	zapros = sortedByWords()
 
 print('<table>')
-print("<tr><td><b>#</b></td> <td><b>Word</b></td> <td><b>Tag</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount</b></td> <td><b>Edit</b></td> <td><b>Delete</b></td></tr>")
+print("<tr><td><b>#</b></td> <td><b>Word {0}{1}</b></td> <td><b>Tag{2}{3}</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount{4}{5}</b></td> <td><b>Edit</b></td> <td><b>Delete</b></td></tr>".format(str1, str2, str5, str6, str3, str4))
 ind = 1
 for word, amount, tag, en_d, ru_d, color in c.execute(zapros):
 
-	#edit_str = '<a target="_blank" href = "editWord.py/?word={0}&tag={1}">[edit]</a>'.format(word, tag)
-	
-	edit_str = '<a href="#" ONCLICK="window.open(' + "'editWord.py/?word={0}&tag={1}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');" + '">[edit]</a>'
+	edit_str = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'editWord.py/?word={0}&tag={1}&amount={2}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(word, tag, amount) + '">[edit]</a>'
 
 	remove_str = '<a onclick="destroy(\'{0}\', \'{1}\');" href = "/cgi-bin/voc.py"><center>[x]</center></a>'.format(word, tag)
 	print('<tr style="background:#{0}">'.format(color))
