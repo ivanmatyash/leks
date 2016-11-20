@@ -38,7 +38,7 @@ print('''
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Главная | Словарь</title>
+<title>Таблица слов | Словарь</title>
 <link rel="stylesheet" type="text/css" href="/style.css"/>
 <script type="text/javascript"> 
 function destroy(a, b, c)
