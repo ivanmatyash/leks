@@ -72,7 +72,7 @@ for idGroup, idMain in d.execute(zapros):
 	
 	idStr = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'getGroup.py/?idGroup={0}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(idGroup) + '">{0}</a>'.format(idGroup)
 	print('<tr style="background:#{0}">'.format("F5F5F5"))
-	print('<td>{0}</td> <td>{1}</td> <td>{2}</td>'.format(idStr, mainWord, resStr))
+	print('<td><center>{0}</center></td> <td>{1}</td> <td>{2}</td>'.format(idStr, mainWord, resStr))
 	print('</tr>')
 print('</table>')
 

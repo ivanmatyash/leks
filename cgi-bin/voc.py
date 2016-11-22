@@ -205,7 +205,7 @@ for (idWord, word, amount, tag, en_d, ru_d, color, idGroup) in c.execute(zapros)
 
 
 	print('<tr style="background:#{0}">'.format("F5F5F5"))
-	print('<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5}</td> <td>{6}</td> <td>{7}</td><td><center>{8}</center></td>'.format(idLink, word, tag, en_d, ru_d, amount, edit_str, remove_str, idGroup))
+	print('<td>{0}</td> <td>{1}</td> <td><center>{2}</center></td> <td>{3}</td> <td>{4}</td> <td><center>{5}</center></td> <td>{6}</td> <td>{7}</td><td><center>{8}</center></td>'.format(idLink, word, tag, en_d, ru_d, amount, edit_str, remove_str, idGroup))
 	print('</tr>')
 print('</table>')
 conn.close()
