@@ -23,13 +23,15 @@ def editWord():
 	c.execute('''SELECT name, id FROM tags''')
 	sl = dict(c.fetchall())
 	
-	c.execute("DELETE FROM voc WHERE word = '{0}' AND tagID = {1} AND amount = {2}".format(lastWord, sl[lastTag], lastAmount1))
+	
+	
 
 	c.execute("SELECT COUNT(*) FROM voc WHERE word = '{0}' AND tagID = {1}".format(word1, sl[tag]))
 	t = c.fetchall()[0]
 	if t[0] == 0:
-		c.execute("INSERT INTO voc (word, amount, tagID) SELECT '{0}', {1}, {2} WHERE NOT EXISTS (SELECT * FROM voc WHERE word = '{0}' AND tagID = {2});".format(word, amount1, sl[tag]))
+		c.execute("UPDATE voc SET word = '{0}', tagID = {1}, amount = {2} WHERE word = '{3}' AND tagID = {4} AND amount = {5}".format(word, sl[tag], amount1, lastWord, sl[lastTag], lastAmount1))
 	else:
+		c.execute("DELETE FROM voc WHERE word = '{0}' AND tagID = {1} AND amount = {2}".format(lastWord, sl[lastTag], lastAmount1))
 		c.execute("UPDATE voc SET amount = amount + {2} WHERE word = '{0}' AND tagID = {1}".format(word, sl[tag], amount1))
 	conn.commit()
 	conn.close()

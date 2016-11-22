@@ -6,24 +6,6 @@ import sqlite3
 
 
 
-def addInfo(word, tag):
-	word = word.lower()
-	conn = sqlite3.connect('data/voc.db')
-	c = conn.cursor()
-	
-	c.execute('''SELECT name, id FROM tags''')
-	sl = dict(c.fetchall())
-	
-	c.execute("SELECT COUNT(*) FROM voc WHERE word = '{0}' AND tagID = {1}".format(word, sl[tag]))
-	t = c.fetchall()[0]
-	if t[0] == 0:
-		c.execute("INSERT INTO voc (word, amount, tagID) SELECT '{0}', {1}, '{2}' WHERE NOT EXISTS (SELECT * FROM voc WHERE word = '{0}' AND tagID = {2});".format(word, 1, sl[tag]))
-	else:
-		c.execute("UPDATE voc SET amount = amount + 1 WHERE word = '{0}' AND tagID = {1}".format(word, sl[tag]))
-
-	conn.commit()
-	conn.close()
-
 form_data = cgi.FieldStorage()
 word = form_data.getfirst("word", "-1")
 tag = form_data.getfirst("tag", "-1")

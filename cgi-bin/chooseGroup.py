@@ -16,9 +16,11 @@ def getGroups():
 	for id, idMain in c.execute('''SELECT id, idMain FROM groups'''):
 		d.execute('SELECT word FROM voc WHERE idWord = {0}'.format(idMain))
 		mainWord = d.fetchall()[0][0]
+		d.execute('SELECT tagID FROM voc WHERE idWord = {0}'.format(idMain))
+		tagM = d.fetchall()[0][0]
 		addString = '<a href="/cgi-bin/addGroup.py?idWord={0}&idExcGroup={1}">Добавить</a>'.format(idWord, id)
 		otherForms = []
-		for w in e.execute("SELECT word FROM voc WHERE idGroup={0} AND word != '{1}'".format(id, mainWord)):
+		for w in e.execute("SELECT word FROM voc WHERE idGroup={0}  AND (word != '{1}' OR tagID != {2})".format(id, mainWord, tagM)):
 			otherForms.extend(w)
 		result += '<tr>'
 		result += '<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td>'.format(id, mainWord, otherForms, addString)
@@ -31,10 +33,18 @@ def getGroups():
 form_data = cgi.FieldStorage()
 idWord = form_data.getfirst("idWord", "-1")
 
+
 listGroups = getGroups()
 message = "Существующие группы:<br>"
 
 if idWord != '-1':
+	conn = sqlite3.connect('data/voc.db')
+	c = conn.cursor()
+	c.execute('SELECT word FROM voc WHERE idWord = {0}'.format(idWord))
+	slovo = c.fetchall()[0][0]
+	message = 'Вы хотите добавить "<b>{0}</b>".<br><br>Существующие группы:'.format(slovo) 
+	conn.commit()
+	conn.close()
 	if listGroups == '':
 		message += "[Список пуст]"	
 	else:

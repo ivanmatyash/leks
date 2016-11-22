@@ -29,6 +29,15 @@ if (confirm('Вы хорошо подумали? Словарь будет по�
 window.open('/cgi-bin/truncate.py', '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
 }
 }
+function remove(a, b)
+	{
+		if (confirm('Bы уверены, что хотите удалить слово #' + a + ' из группы #' + b + '?')) 
+		{
+			var link1 = '/cgi-bin/deleteFromGroup.py/?idWord=' + a + '&idGroup=' + b;
+			window.open(link1,'','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
+			
+		}
+	}
 </script>
 </head>
 <body>
@@ -42,17 +51,28 @@ print(''' </div>
 
 zapros = ('''SELECT * FROM groups''')
 
+
+
 print('<table width = 100%>')
 print("<tr><td><b>№ группы</b></td> <td><b>Основная форма</b></td> <td><b>Другие формы</b></td></tr>")
-for id, idMain in c.execute(zapros):
-	d.execute('SELECT word FROM voc WHERE idWord = {0}'.format(idMain))
-	mainW = d.fetchall()[0][0]
-	otherWords = []
-	for word in d.execute("SELECT word FROM voc WHERE idGroup = {0} AND word != '{1}'".format(id, mainW)):
-		otherWords.extend(word)
-	idStr = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'getGroup.py/?idGroup={0}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(id) + '">{0}</a>'.format(id)
+for idGroup, idMain in d.execute(zapros):
+	c.execute('SELECT idMain FROM groups WHERE id = {0}'.format(idGroup))
+	idMainWord = c.fetchall()[0][0]
+
+	c.execute('SELECT word FROM voc WHERE idWord = {0}'.format(idMainWord))
+	mainWord = c.fetchall()[0][0]
+
+	c.execute('SELECT tagID FROM voc WHERE idWord = {0}'.format(idMainWord))
+	tagM = c.fetchall()[0][0]
+	resStr = ''	
+	for idWord, word, tag in c.execute("SELECT v.idWord, v.word, t.name FROM voc v INNER JOIN tags t ON v.tagID = t.id WHERE v.idGroup = {0} AND (v.word != '{1}' OR v.tagID != {2}) ".format(idGroup, mainWord, tagM)):
+		resStr += word + "(" + tag + ")[" + '<a href="#" onclick="remove({0}, {1});">x</a>]; '.format(idWord, idGroup)
+	c.execute("SELECT t.name FROM tags t INNER JOIN voc v ON v.tagID = t.id WHERE v.idWord = {0}".format(idMainWord))
+	mainWord += "(" + c.fetchall()[0][0] + ")"
+	
+	idStr = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'getGroup.py/?idGroup={0}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(idGroup) + '">{0}</a>'.format(idGroup)
 	print('<tr style="background:#{0}">'.format("F5F5F5"))
-	print('<td>{0}</td> <td>{1}</td> <td>{2}</td>'.format(idStr, mainW, otherWords))
+	print('<td>{0}</td> <td>{1}</td> <td>{2}</td>'.format(idStr, mainWord, resStr))
 	print('</tr>')
 print('</table>')
 

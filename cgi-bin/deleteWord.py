@@ -11,8 +11,17 @@ def removeInfo(word, tag):
 	
 	c.execute('''SELECT name, id FROM tags''')
 	sl = dict(c.fetchall())
-
-	c.execute("DELETE FROM voc WHERE word = '{0}' AND tagID = {1}".format(word, sl[tag]))
+	c.execute("SELECT idWord FROM voc WHERE word='{0}' AND tagID = {1}".format(word, sl[tag]))
+	item = c.fetchall()[0][0]
+	c.execute("SELECT COUNT(*) FROM groups WHERE idMain = {0}".format(item))
+	amountTest = c.fetchall()[0][0]
+	if amountTest == 1:
+		c.execute("SELECT id FROM groups WHERE idMain = {0}".format(item))
+		idGr = c.fetchall()[0][0]
+		c.execute("DELETE FROM groups WHERE idMain = {0}".format(item))
+		c.execute("UPDATE voc SET idGroup = -1 WHERE idGroup={0}".format(idGr))
+	c.execute("DELETE FROM voc WHERE word = '{0}' AND tagID = {1}".format(word, sl[tag]))		
+	
 	conn.commit()
 	conn.close()
 
