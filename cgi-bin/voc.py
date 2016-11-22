@@ -17,21 +17,21 @@ find = form_data.getfirst("find", "-1")
 
 
 def sortedByCount():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount'
 def sortedByCountReverse():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount DESC'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount DESC'
 def sortedByWords():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY word'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY word'
 def sortedByWordsReverse():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY word DESC'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY word DESC'
 def sortedByTag():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID'
 def sortedByTagReverse():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID DESC'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID DESC'
 def sortedById():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.idWord'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.idWord'
 def sortedByIdReverse():
-	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.idWord DESC'
+	return 'SELECT v.idWord, v.word, v.amount, t.name, t.description, t.translate, t.color, v.idGroup FROM voc v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.idWord DESC'
 
 def findWord():
 	kor = []
@@ -96,10 +96,10 @@ window.open(link1, '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Sc
 <body>
 <a style="position:fixed;padding:20px;" href = "#">Наверх</a>
 <div id="container">
-  <div id="header"> <a href="/">My dictionary</a> </div>
+  <div id="header"> <a href="/">Таблица слов</a> </div>
   <div id="menu"> ''')
 
-print('<a href="/">Главная</a>&nbsp; &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/voc.py">Словарь</a> &nbsp; &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/stat.py">Статистика</a> &nbsp; &nbsp; &nbsp; &nbsp; <a onclick="truncate();" href="javascript:void(0)" >Очистить словарь</a> &nbsp; &nbsp; &nbsp; &nbsp;<a> Слов в словаре: {0}</a> &nbsp; &nbsp; &nbsp; &nbsp; <a>Уникальных слов: {1}</a>'.format(amountOfWords, amountOfUniqueWords))
+print('<a href="/">Главная</a>&nbsp; &nbsp; &nbsp; <a href="/cgi-bin/voc.py">Словарь</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/stat.py">Статистика</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/groups.py">Группы</a> &nbsp; &nbsp; &nbsp; <a onclick="truncate();" href="javascript:void(0)" >Очистить словарь</a> &nbsp; &nbsp; &nbsp;<a> Слов в словаре: {0}</a>&nbsp; &nbsp; &nbsp; <a>Уникальных: {1}</a>'.format(amountOfWords, amountOfUniqueWords))
 print(''' </div>
   <div id="mainV">''')
 
@@ -127,7 +127,7 @@ print('''<div id="addw_block"><form method="post">
 
 
 #БЛОК ПОИСКА
-print('''<div id="search_block"><form enctype="multipart/form-data"  method="get" action="voc.py">
+print('''<div id="search_block"><form enctype="multipart/form-data"  method="post" action="">
         <input type="text" value="" size="10" accept = "text/plain" name="find">
         <input type="submit" value="Поиск">
     </form></div>''')
@@ -171,14 +171,36 @@ else:
 
 
 print('<table width = 100%>')
-print("<tr><td><b>#{6}{7}</b></td> <td><b>Word {0}{1}</b></td> <td><b>Tag{2}{3}</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount{4}{5}</b></td> <td><b>Edit</b></td> <td><b>Delete</b></td></tr>".format(str1, str2, str5, str6, str3, str4, str7, str8))
+print("<tr><td><b>#{6}{7}</b></td> <td><b>Word {0}{1}</b></td> <td><b>Tag{2}{3}</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount{4}{5}</b></td> <td><b>Edit</b></td> <td><b>Delete</b></td><td><b>Group</b></td></tr>".format(str1, str2, str5, str6, str3, str4, str7, str8))
 
-for (idWord, word, amount, tag, en_d, ru_d, color) in c.execute(zapros):
+for (idWord, word, amount, tag, en_d, ru_d, color, idGroup) in c.execute(zapros):
 	edit_str = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'editWord.py/?word={0}&tag={1}&amount=		{2}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(word, tag, amount) + '">[edit]</a>'
 	remove_str = '<a onclick="destroy(\'{0}\', \'{1}\', {2});" href = "javascript:void(0)"><center>[x]</center></a>'.format(word, tag, amount)
 	idLink = '<a href="#{0}" name="{0}">{0}</a>'.format(idWord)
-	print('<tr style="background:#{0}">'.format(color))
-	print('<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5}</td> <td>{6}</td> <td>{7}</td>'.format(idLink, word, tag, en_d, ru_d, amount, edit_str, remove_str))
+	
+
+	if idGroup == -1:
+		idGroup = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'chooseGroup.py/?idWord={0}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(idWord) + '">[+]</a>'.format(idWord)
+	else:
+		f = conn.cursor()
+		mainWord = ''
+		otherWords = []
+		f.execute("SELECT idMain FROM groups WHERE id = {0}".format(idGroup))
+		indMain = f.fetchall()[0][0]
+		f.execute("SELECT word FROM voc WHERE idWord = {0}".format(indMain))
+		mainWord = f.fetchall()[0][0]
+		for word in f.execute("SELECT word FROM voc WHERE idGroup = {0} AND word != '{1}'".format(idGroup, mainWord)):
+			otherWords.extend(word)
+		if otherWords:
+			podskazka = "Main form: {0}, other forms: {1}".format(mainWord, otherWords)
+		else:
+			podskazka = "Main form: {0}, other forms: NO".format(mainWord)
+		idGroup = '<a title="{0}" href="javascript:void(0)" ONCLICK="window.open('.format(podskazka) + "'getGroup.py/?idGroup={0}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(idGroup) + '">{0}</a>'.format(idGroup)
+
+
+
+	print('<tr style="background:#{0}">'.format("F5F5F5"))
+	print('<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5}</td> <td>{6}</td> <td>{7}</td><td><center>{8}</center></td>'.format(idLink, word, tag, en_d, ru_d, amount, edit_str, remove_str, idGroup))
 	print('</tr>')
 print('</table>')
 conn.close()

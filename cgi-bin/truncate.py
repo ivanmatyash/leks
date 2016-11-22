@@ -14,7 +14,10 @@ amountW = c.fetchall()[0][0]
 c.execute('''SELECT SUM(amount) FROM voc''')
 amountS = c.fetchall()[0][0]
 c.execute('''DROP TABLE voc''')
-c.execute('''CREATE TABLE voc (idWord INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER)''')
+c.execute('''CREATE TABLE voc (idWord INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER, idGroup INTEGER DEFAULT -1)''')
+c.execute('''DROP TABLE IF EXISTS groups''')
+c.execute('''CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, idMain INTEGER)''')
+
 conn.commit()
 t2 = time.time()
 

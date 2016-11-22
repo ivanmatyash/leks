@@ -48,8 +48,11 @@ def addDB(dic):
 	conn = sqlite3.connect("data/voc.db")
 	c = conn.cursor()
 	c.execute('''DROP TABLE IF EXISTS voc''')
-	c.execute('''CREATE TABLE IF NOT EXISTS voc (idWord INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER)''')
+	c.execute('''DROP TABLE IF EXISTS groups''')
+	c.execute('''CREATE TABLE IF NOT EXISTS voc (idWord INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, amount INTEGER DEFAULT 1, tagID INTEGER, idGroup INTEGER DEFAULT -1)''')
 	c.execute('''CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, description TEXT, translate TEXT, color TEXT)''')
+	c.execute('''CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, idMain INTEGER)''')
+
 	conn.commit()
 	c.execute('''SELECT COUNT(*) FROM tags''')
 	t = c.fetchall()[0]

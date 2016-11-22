@@ -18,16 +18,9 @@ print('''
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Статистика | Словарь</title>
+<title>Группы слов | Словарь</title>
 <link rel="stylesheet" type="text/css" href="/style.css"/>
-<script type="text/javascript"> 
-function destroy(a, b, c)
-{
-if (confirm('Bы уверены, что хотите удалить слово "' + a + '" c тегом "' + b + '" из словаря?')) {
-var link1 = "deleteWord.py/?word=" + a + "&tag=" + b + "&amount=" + c;
-window.open(link1, '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
-}
-}
+<script type="text/javascript"> 	
 function truncate()
 {
 if (confirm('Bы уверены, что хотите очистить весь словарь?')) 
@@ -40,22 +33,26 @@ window.open('/cgi-bin/truncate.py', '', 'Toolbar=1,Location=0,Directories=0,Stat
 </head>
 <body>
 <div id="container">
-  <div id="header"> <a href="/">Статистика</a> </div>
+  <div id="header"> <a href="/">Группы слов</a> </div>
   <div id="menu"> ''')
 
 print('<a href="/">Главная</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/voc.py">Словарь</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/stat.py">Статистика</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/groups.py">Группы</a> &nbsp; &nbsp; &nbsp; <a onclick="truncate();" href="javascript:void(0)" >Очистить словарь</a> &nbsp; &nbsp; &nbsp;<a> Слов в словаре: {0}</a>  &nbsp; &nbsp; &nbsp; <a>Уникальных: {1}</a>'.format(amountOfWords, amountOfUniqueWords))
 print(''' </div>
   <div id="mainV">''')
 
-zapros = ('''SELECT * FROM tags''')
+zapros = ('''SELECT * FROM groups''')
 
 print('<table width = 100%>')
-print("<tr><td><b>№</b></td> <td><b>Тег</b></td> <td><b>Описание</b></td> <td><b>Русское описание</b></td><td><b>Кол-во:</b></td></tr>")
-for id, name, description, translate, color in c.execute(zapros):
-	d.execute("SELECT COUNT(*) FROM voc WHERE tagID={0}".format(id))
-	amountT = d.fetchall()[0][0]
-	print('<tr style="background:#{0}">'.format(color))
-	print('<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td>'.format(id, name, description, translate, amountT))
+print("<tr><td><b>№ группы</b></td> <td><b>Основная форма</b></td> <td><b>Другие формы</b></td></tr>")
+for id, idMain in c.execute(zapros):
+	d.execute('SELECT word FROM voc WHERE idWord = {0}'.format(idMain))
+	mainW = d.fetchall()[0][0]
+	otherWords = []
+	for word in d.execute("SELECT word FROM voc WHERE idGroup = {0} AND word != '{1}'".format(id, mainW)):
+		otherWords.extend(word)
+	idStr = '<a href="javascript:void(0)" ONCLICK="window.open(' + "'getGroup.py/?idGroup={0}','','Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');".format(id) + '">{0}</a>'.format(id)
+	print('<tr style="background:#{0}">'.format("F5F5F5"))
+	print('<td>{0}</td> <td>{1}</td> <td>{2}</td>'.format(idStr, mainW, otherWords))
 	print('</tr>')
 print('</table>')
 
