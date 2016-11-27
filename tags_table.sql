@@ -35,3 +35,5 @@ INSERT INTO tags VALUES(33, 'WP', 'wh-pronoun', 'wh-местоимение', '90
 INSERT INTO tags VALUES(34, 'WP$', 'possessive wh-pronoun', 'притяжательно wh-местоимение', 'FFFF00');
 INSERT INTO tags VALUES(35, 'WRB', 'wh-abverb', 'wh-наречие', '8B8B00');
 INSERT INTO tags VALUES(36, '$', 'other tag', 'неизвестный', 'FFFF33');
+INSERT INTO tags VALUES(37, '@@@', 'punctuation mark', 'знак препинания', 'FFFF33');
+INSERT INTO tags VALUES(38, 'NUM', 'numeral', 'Числительное', 'FFFF33');
