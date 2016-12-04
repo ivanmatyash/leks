@@ -13,9 +13,6 @@ c.execute("SELECT SUM(amount) FROM  voc")
 amountOfWords = c.fetchall()[0][0]
 c.execute("SELECT COUNT(*) FROM voc")
 amountOfUniqueWords = c.fetchall()[0][0]
-c.execute('''DROP TABLE IF EXISTS text''')
-c.execute('''CREATE TABLE IF NOT EXISTS text (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, tagID INTEGER, color TEXT)''')
-
 
 print('''
 <!DOCTYPE html>
@@ -29,7 +26,7 @@ function truncate()
 if (confirm('Bы уверены, что хотите очистить весь словарь?')) 
 if (confirm('Вы хорошо подумали? Словарь будет полностью очищен...'))
 {
-window.open('/cgi-bin/text.py', '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
+window.open('/cgi-bin/truncate.py', '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
 }
 }
 
@@ -50,7 +47,7 @@ print(''' </div>
 
 
 <h2>Как это работает?</h2>
-На предыдущих шагах вы создали словарь, куда внесли много слов. Теперь вы подаёте на вход текст. В этом тексте каждое слово проверяется на принадлежность к вашему словарю. Если слово найдено в словаре - ему приписывается тег. Если тегов у такого слова несколько - вам предлагается выбрать из них один. Если такого слова в словаре нет, вам предлагается самостоятельно назначить слову тег.
+На предыдущих шагах вы создали словарь, куда внесли много слов. Теперь вы подаёте на вход текст. В этом тексте каждое слово проверяется на принадлежность к вашему словарю. Если слово найдено в словаре - ему приписывается тег. Если тегов у такого слова несколько - вам предлагается выбрать из них один. Если такого слова в словаре нет, вам предлагается самостоятельно назначить слову тег. <a href="/cgi-bin/stat_text.py">Статистика прошлых текстов</a>.
 
 <h2>Раскрасить текст</h2>
 ''')

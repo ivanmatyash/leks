@@ -7,6 +7,7 @@ import sqlite3
 
 conn = sqlite3.connect('data/voc.db')
 c = conn.cursor()
+d = conn.cursor()
 search_c = conn.cursor()
 
 form_data = cgi.FieldStorage()
@@ -29,21 +30,21 @@ for item in dic:
 	conn.commit()
 
 def sortedByCount():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount'
 def sortedByCountReverse():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount DESC'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY amount DESC'
 def sortedByWords():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY word'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY word'
 def sortedByWordsReverse():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY word DESC'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY word DESC'
 def sortedByTag():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID'
 def sortedByTagReverse():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID DESC'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.tagID DESC'
 def sortedById():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.id'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.id'
 def sortedByIdReverse():
-	return 'SELECT v.id, v.word, v.amount, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.id DESC'
+	return 'SELECT v.id, v.word, v.amount, t.id, t.name, t.description, t.translate FROM voc_text v INNER JOIN tags t ON v.tagID = t.id ORDER BY v.id DESC'
 
 
 def findWord():
@@ -76,6 +77,30 @@ c.execute("SELECT SUM(amount) FROM  voc_text")
 amountText = c.fetchall()[0][0]
 c.execute("SELECT COUNT(*) FROM voc_text")
 amountUText = c.fetchall()[0][0]
+
+
+c.execute("SELECT COUNT(*) FROM text")
+amountWordInText= c.fetchall()[0][0]
+
+
+dic_main = {}
+
+for item in range(1,amountWordInText):
+	c.execute("SELECT tagID FROM text WHERE id = {0}".format(item))
+	tagID1 = c.fetchall()[0][0]
+	if tagID1 == 37:
+		continue
+	d.execute("SELECT tagID FROM text WHERE id = {0}".format(item + 1))
+	tagID2 = d.fetchall()[0][0]
+	if tagID2 == 37 and (item + 1) == amountWordInText:
+		break
+	if tagID2 == 37:
+		d.execute("SELECT tagID FROM text WHERE id = {0}".format(item + 2))
+		tagID2 = d.fetchall()[0][0]
+	if (tagID1, tagID2) in dic_main:
+		dic_main[(tagID1, tagID2)] += 1
+	else:
+		dic_main[(tagID1, tagID2)] = 1
 
 
 print('''
@@ -151,18 +176,66 @@ elif sorting == 'idReverse':
 else:
 	zapros = sortedByWords()
 
+print('<br><hr><br> <center><h1>По кодам</h1></center><br>')
+zapros1 = ('''SELECT * FROM tags''')
 print('<table width = 100%>')
-print("<tr><td><b>#{6}{7}</b></td> <td><b>Word {0}{1}</b></td> <td><b>Tag{2}{3}</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount{4}{5}</b></td></tr>".format(str1, str2, str5, str6, str3, str4, str7, str8))
-
-for (idWord, word, amount, tag, en_d, ru_d) in c.execute(zapros):
-	idLink = '<a href="#{0}" name="{0}">{0}</a>'.format(idWord)
-	
-
-
+print("<tr><td><b>№</b></td> <td><b>Тег</b></td> <td><b>Описание</b></td> <td><b>Русское описание</b></td><td><b>Кол-во:</b></td></tr>")
+for id, name, description, translate, color in c.execute(zapros1):
+	d.execute("SELECT COUNT(*) FROM text WHERE tagID={0}".format(id))
+	amountT = d.fetchall()[0][0]
+	if amountT == 0:
+		continue
 	print('<tr style="background:#{0}">'.format("F5F5F5"))
-	print('<td>{0}</td> <td>{1}</td> <td><center>{2}</center></td> <td>{3}</td> <td>{4}</td> <td><center>{5}</center></td>'.format(idLink, word, tag, en_d, ru_d, amount))
+	print('<td>{0}</td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td>'.format(id, name, description, translate, amountT))
 	print('</tr>')
 print('</table>')
+
+print('<hr><br> <center><h1>По паре слово-код</h1></center><br>')
+print('<table width = 100%>')
+print("<tr><td><b>#{6}{7}</b></td> <td><b>Word {0}{1}</b></td> <td><b>Tag{2}{3}</b></td> <td><b>Description</b></td> <td><b>Russian description</b></td> <td><b>Amount{4}{5}</b></td> <td><b>Amount (in dict)</b></td></tr>".format(str1, str2, str5, str6, str3, str4, str7, str8))
+
+for (idWord, word, amount, idTag1, tag, en_d, ru_d) in c.execute(zapros):
+	d.execute("SELECT amount FROM voc WHERE word = '{0}' AND tagID = {1}".format(word, idTag1))
+	amountInDict = d.fetchall()
+	if amountInDict:
+		amountInDict = amountInDict[0][0]
+	else:
+		amountInDict = 0
+	colorTR = "F5F5F5"
+	if amount != amountInDict:
+		colorTR = "FFA07A"
+	idLink = '<a href="#{0}" name="{0}">{0}</a>'.format(idWord)
+	print('<tr style="background:#{0}">'.format(colorTR))
+	print('<td>{0}</td> <td>{1}</td> <td><center>{2}</center></td> <td>{3}</td> <td>{4}</td> <td><center>{5}</center></td><td><center>{6}</center></td>'.format(idLink, word, tag, en_d, ru_d, amount, amountInDict))
+	print('</tr>')
+print('</table>')
+
+
+print('<hr><br> <center><h1>По парам кодов</h1></center><br>')
+print('<table width = 100%>')
+print("<tr><td><b>Последовательность кодов</b></td> <td><b>Первый код</b></td> <td><b>Второй код</b></td><td><b>Количество</b></td></tr>")
+
+for temp in dic_main:
+	c.execute("SELECT name, translate FROM tags WHERE id = {0}".format(temp[0]))
+	res = c.fetchall()[0]
+	tag1 = res[0]
+	tag1D = res[1]
+	c.execute("SELECT name, translate FROM tags WHERE id = {0}".format(temp[1]))
+	res = c.fetchall()[0]
+	tag2 = res[0]
+	tag2D = res[1]
+	
+	print('<tr style="background:#{0}">'.format("F5F5F5"))
+	print('<td>{0} / {1}</td> <td>{2}</td> <td>{3}</td> <td><center>{4}</center></td>'.format(tag1, tag2, tag1D, tag2D, dic_main[temp]))
+	print('</tr>')
+print('</table>')
+
+
+
+
+
+
+
 conn.close()
 print("""</div>
   <div id="footer"> &copy; 2016 Все права защищены &nbsp;<span class="separator">|</span>&nbsp; <a href="http://vk.com/ivan_matyash" target="blank">Ivan Matsiash</a> </div>

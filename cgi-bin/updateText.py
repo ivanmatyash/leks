@@ -4,6 +4,9 @@ import html
 import cgitb; cgitb.enable()
 import sqlite3
 
+form_data = cgi.FieldStorage()
+id = form_data.getfirst("id", "-1")
+newTag = form_data.getfirst("tagg", "-1")
 
 conn = sqlite3.connect('data/voc.db')
 c = conn.cursor()
@@ -14,42 +17,51 @@ amountOfWords = c.fetchall()[0][0]
 c.execute("SELECT COUNT(*) FROM voc")
 amountOfUniqueWords = c.fetchall()[0][0]
 
-form_data = cgi.FieldStorage()
 
-c.execute("SELECT id FROM text WHERE tagID = 36")
-ids = c.fetchall()
-listIds = []
-for item in ids:
-	listIds.append(item[0])
-c.execute("SELECT word FROM voc GROUP BY word HAVING COUNT(word) > 1")
-ids1 = c.fetchall()
-idsList = []
+flagClose = False
+	
+if newTag == "-1":
+	c.execute("SELECT id FROM text WHERE tagID = 36")
+	ids = c.fetchall()
+	listIds = []
+	for item in ids:
+		listIds.append(item[0])
+	c.execute("SELECT word FROM voc GROUP BY word HAVING COUNT(word) > 1")
+	ids1 = c.fetchall()
+	idsList = []
+	
+	for item in listIds:
+		tag = form_data.getfirst("select{0}".format(item), "-1")
+		c.execute("SELECT id FROM tags WHERE name = '{0}'".format(tag))
+		itTag = c.fetchall()[0][0]
+		c.execute("UPDATE text SET tagID = {0} WHERE id = {1}".format(itTag, item))
+		conn.commit()
 
-
-for item in listIds:
-	tag = form_data.getfirst("select{0}".format(item), "-1")
-	c.execute("SELECT id FROM tags WHERE name = '{0}'".format(tag))
-	itTag = c.fetchall()[0][0]
-	c.execute("UPDATE text SET tagID = {0} WHERE id = {1}".format(itTag, item))
+	for item in ids1:
+		c.execute("SELECT COUNT(*) FROM text WHERE LOWER(word) = '{0}'".format(item[0]))
+		am = c.fetchall()[0][0]
+		if am != 0:
+			c.execute("SELECT id FROM text WHERE LOWER(word) ='{0}'".format(item[0]))
+			listPovtor = c.fetchall()
+			for item1 in listPovtor:
+				tag = form_data.getfirst("select{0}".format(item1[0]), "-1")
+				c.execute("SELECT id FROM tags WHERE name = '{0}'".format(tag))
+				itTag = c.fetchall()[0][0]
+				c.execute("UPDATE text SET tagID = {0} WHERE id = {1}".format(itTag, item1[0]))
+				conn.commit()
+else:
+	c.execute("SELECT id FROM tags WHERE name ='{0}'".format(newTag))
+	tagid = c.fetchall()[0][0]
+	c.execute("UPDATE text SET tagID = {0} WHERE id = {1}".format(tagid, id))
 	conn.commit()
+	flagClose = True;
 
-for item in ids1:
-	c.execute("SELECT COUNT(*) FROM text WHERE LOWER(word) = '{0}'".format(item[0]))
-	am = c.fetchall()[0][0]
-	if am != 0:
-		c.execute("SELECT id FROM text WHERE LOWER(word) ='{0}'".format(item[0]))
-		listPovtor = c.fetchall()
-		for item1 in listPovtor:
-			tag = form_data.getfirst("select{0}".format(item1[0]), "-1")
-			c.execute("SELECT id FROM tags WHERE name = '{0}'".format(tag))
-			itTag = c.fetchall()[0][0]
-			c.execute("UPDATE text SET tagID = {0} WHERE id = {1}".format(itTag, item1[0]))
-			conn.commit()
+
 
 
 result = ""
-for word, nameTag, translate in c.execute("SELECT t.word, tag.name, tag.translate FROM text t INNER JOIN tags tag ON tag.id = t.tagID"):
-	result += '<a title="{0},{1}" onclick="">{2} </a>'.format(nameTag, translate, word)
+for id, word, nameTag, translate in c.execute("SELECT t.id, t.word, tag.name, tag.translate FROM text t INNER JOIN tags tag ON tag.id = t.tagID"):
+	result += '<a title="{0},{1}" onclick="editWord({3})">{2} </a>'.format(nameTag, translate, word, id)
 
 
 print('''
@@ -69,6 +81,22 @@ window.open('/cgi-bin/text.py', '', 'Toolbar=1,Location=0,Directories=0,Status=0
 }
 }
 
+function editWord(a)
+{
+	var link = '/cgi-bin/editWordText.py?id=' + a;
+	window.open(link, '', 'Toolbar=1,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0,Width=550,Height=400');
+}
+
+        function closeW() 
+        {  
+		window.opener.location.reload();
+            window.close()
+        }  
+        function closeOpenedWindow()
+        {  
+            window.close()  
+        } 
+    
 </script>
 </head>
 <body>
@@ -76,6 +104,10 @@ window.open('/cgi-bin/text.py', '', 'Toolbar=1,Location=0,Directories=0,Status=0
   <div id="header"> <a href="/">Готовый текст</a> </div>
   <div id="menu"> ''')
 
+if flagClose:
+	print('''<script type="text/javascript">
+	closeW()
+	</script>''')
 print('<a href="/">Главная</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/voc.py">Словарь</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/stat.py">Статистика</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/groups.py">Группы</a> &nbsp; &nbsp; &nbsp; <a onclick="truncate();" href="javascript:void(0)" >Очистить словарь</a> &nbsp; &nbsp; &nbsp; <a href="/cgi-bin/text.py" >Текст</a> &nbsp; &nbsp; &nbsp;<a> Слов в словаре: {0}</a>  &nbsp; &nbsp; &nbsp; <a>Уникальных: {1}</a>'.format(amountOfWords, amountOfUniqueWords))
 print(''' </div>
   <div id="mainV">''')

@@ -29,6 +29,9 @@ for item in slova:
 conn = sqlite3.connect('data/voc.db')
 c = conn.cursor()
 d = conn.cursor()
+c.execute('''DROP TABLE IF EXISTS text''')
+c.execute('''CREATE TABLE IF NOT EXISTS text (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, tagID INTEGER, color TEXT)''')
+
 
 c.execute("SELECT SUM(amount) FROM  voc")
 amountOfWords = c.fetchall()[0][0]
@@ -89,6 +92,7 @@ for id, WORD, TAG, COLOR in c.execute("SELECT id, word, tagID, color FROM text")
 		strOpt = '<select name="{0}">'.format(selectStr)
 		for i1 in massID:
 			strOpt += "<option>{0}</option>".format(i1[0])
+		
 		strOpt += "</select>"
 		
 		result += '<font size = "4" color = "#{3}"><a title = "({1}, {2})" onclick="">{0}({4}) </a></font>'.format(WORD, tagTXT, translateTXT, COLOR, strOpt)
